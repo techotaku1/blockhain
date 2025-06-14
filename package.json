@@ -26,10 +26,12 @@
     "@safe-global/safe-core-sdk": "^3.3.5",
     "@t3-oss/env-nextjs": "^0.13.8",
     "drizzle-orm": "^0.44.2",
+    "ethers": "^5.8.0",
     "next": "^15.3.3",
     "postgres": "^3.4.7",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "uuid": "^11.1.0",
     "zod": "^3.25.63"
   },
   "devDependencies": {
