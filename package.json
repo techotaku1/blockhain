@@ -21,6 +21,8 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
+    "@safe-global/protocol-kit": "^6.0.5",
+    "@safe-global/safe-core-sdk": "^3.3.5",
     "@t3-oss/env-nextjs": "^0.13.8",
     "drizzle-orm": "^0.44.2",
     "next": "^15.3.3",
@@ -54,7 +56,7 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.34.0"
   },
-   "overrides": {
+  "overrides": {
     "esbuild": "^0.25.5"
   },
   "ct3aMetadata": {
