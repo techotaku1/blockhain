@@ -4,95 +4,100 @@ import { useState } from 'react';
 
 import { PoapAPI } from '~/lib/poap/api';
 
-import type { PoapEventResponse, PoapDrop } from '~/lib/poap/types';
+import type { PoapDrop } from '~/lib/poap/types';
 
 export default function PoapTestPage() {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<PoapEventResponse | PoapDrop | null>(
-    null
-  );
+  const [result, setResult] = useState<PoapDrop | null>(null);
   const [error, setError] = useState<string>('');
-  const poapApi = new PoapAPI();
 
-  // Test de conexión básica
-  const testConnection = async () => {
+  const handleTest = async () => {
     setLoading(true);
     setError('');
-    try {
-      const result = await poapApi.getEventById(16947);
-      setResult(result);
-      console.log('POAP Response:', result);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-      console.error('POAP Error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setResult(null);
 
-  // Test de creación de drop
-  const testCreateDrop = async () => {
-    setLoading(true);
-    setError('');
     try {
-      const drop = await poapApi.createDrop({
-        name: 'Environmental Report Test',
-        description: 'Test drop for environmental reporting system',
-        city: 'Test City',
-        country: 'Test Country',
-        start_date: new Date().toISOString(),
-        end_date: new Date().toISOString(),
-        expiry_date: new Date(
-          Date.now() + 30 * 24 * 60 * 60 * 1000
-        ).toISOString(),
-        year: new Date().getFullYear(),
-        event_url: 'https://test-event.com',
-        image: 'YOUR_BASE64_IMAGE',
-        email: 'your-email@domain.com',
-        requested_codes: 1,
-      });
-      setResult(drop);
-      console.log('Drop Created:', drop);
+      // Log para verificar la API key
+      console.log('API Key available:', !!process.env.NEXT_PUBLIC_POAP_API_KEY);
+
+      const api = new PoapAPI();
+      console.log(
+        'Testing connection to:',
+        `${process.env.NEXT_PUBLIC_POAP_API_KEY?.substring(0, 10)}...`
+      );
+
+      const event = await api.getEventById('16947');
+      console.log('Response received:', event);
+      setResult(event);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-      console.error('Drop Creation Error:', err);
+      console.error('Full error:', err);
+      setError(err instanceof Error ? err.message : 'Error de conexión');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="mb-4 text-2xl font-bold">POAP Integration Test</h1>
+    <div className="min-h-screen bg-gray-50 px-4 py-12">
+      <div className="mx-auto max-w-2xl space-y-8">
+        <div className="rounded-lg bg-white p-6 shadow-lg">
+          <h1 className="mb-6 text-center text-2xl font-bold">
+            Prueba de Conexión POAP
+          </h1>
 
-      <div className="space-y-4">
-        <button
-          onClick={testConnection}
-          disabled={loading}
-          className="rounded bg-blue-500 px-4 py-2 text-white disabled:bg-gray-400"
-        >
-          {loading ? 'Testing...' : 'Test POAP Connection'}
-        </button>
+          <div className="space-y-4">
+            <button
+              onClick={handleTest}
+              disabled={loading}
+              className="flex w-full items-center justify-center rounded-lg bg-blue-500 px-6 py-3 text-white transition-colors duration-200 hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-400"
+            >
+              {loading ? (
+                <span className="flex items-center">
+                  <svg
+                    className="mr-3 h-5 w-5 animate-spin"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Probando...
+                </span>
+              ) : (
+                'Probar Conexión'
+              )}
+            </button>
 
-        <button
-          onClick={testCreateDrop}
-          disabled={loading}
-          className="ml-4 rounded bg-green-500 px-4 py-2 text-white disabled:bg-gray-400"
-        >
-          {loading ? 'Creating...' : 'Test Create Drop'}
-        </button>
+            {error && (
+              <div className="border-l-4 border-red-500 bg-red-50 p-4">
+                <p className="text-red-700">{error}</p>
+                <p className="mt-1 text-sm text-red-600">
+                  Verifica la consola del navegador para más detalles
+                </p>
+              </div>
+            )}
 
-        {error && (
-          <div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
-            {error}
+            {result && (
+              <div className="border-l-4 border-green-500 bg-green-50 p-4">
+                <p className="text-green-700">¡Conexión exitosa!</p>
+                <pre className="mt-2 overflow-auto rounded bg-white p-2 text-sm">
+                  {JSON.stringify(result, null, 2)}
+                </pre>
+              </div>
+            )}
           </div>
-        )}
-
-        {result && (
-          <pre className="overflow-auto rounded bg-gray-100 p-4">
-            {JSON.stringify(result, null, 2)}
-          </pre>
-        )}
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,9 @@
-import type { PoapDrop, PoapDropInput, PoapMintRequest } from './types';
+import type {
+  PoapDrop,
+  PoapDropInput,
+  PoapMintRequest,
+  ApiErrorResponse,
+} from './types';
 
 const POAP_API_URL = 'https://api.poap.tech';
 
@@ -15,28 +20,37 @@ export class PoapAPI {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const headers = new Headers({
-      'Content-Type': 'application/json',
-      'X-API-Key': this.apiKey,
-    });
-
-    const response = await fetch(`${POAP_API_URL}${endpoint}`, {
-      ...options,
-      headers,
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('API Response:', {
-        status: response.status,
-        statusText: response.statusText,
-        headers: Object.fromEntries(response.headers),
-        error: errorText,
+    try {
+      console.log('Fetching:', `${POAP_API_URL}${endpoint}`);
+      console.log('Headers:', {
+        'Content-Type': 'application/json',
+        'X-API-Key': `${this.apiKey.substring(0, 10)}...`,
       });
-      throw new Error(`POAP API error: ${response.statusText} - ${errorText}`);
-    }
 
-    return response.json() as Promise<T>;
+      const response = await fetch(`${POAP_API_URL}${endpoint}`, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': this.apiKey,
+        },
+      });
+
+      const responseData = (await response.json()) as T | ApiErrorResponse;
+
+      if (!response.ok) {
+        const errorData = responseData as ApiErrorResponse;
+        throw new Error(
+          `POAP API error: ${response.status} - ${errorData.message}`
+        );
+      }
+
+      return responseData as T;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('Unknown error occurred');
+    }
   }
 
   async createDrop(params: PoapDropInput): Promise<PoapDrop> {
