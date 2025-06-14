@@ -42,7 +42,7 @@ const eslintConfig = [
       },
     },
     linterOptions: {
-      reportUnusedDisableDirectives: false, // Change this to false
+      reportUnusedDisableDirectives: false,
       noInlineConfig: false,
     },
     plugins: {

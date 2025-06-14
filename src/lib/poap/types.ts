@@ -1,0 +1,100 @@
+export interface EnvironmentalReport {
+  imageUrl: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  description: string;
+  type: 'natural' | 'anthropogenic';
+  reporterId: string;
+}
+
+export type EnvironmentalReportInput = Partial<EnvironmentalReport>;
+
+export interface PoapDropInput {
+  name: string;
+  description: string;
+  city: string;
+  country: string;
+  start_date: string;
+  end_date: string;
+  expiry_date: string;
+  year: number;
+  event_url: string;
+  image: string;
+  email: string;
+  requested_codes: number;
+}
+
+export interface PoapDrop {
+  id: number;
+  fancy_id: string;
+  name: string;
+  location_type: string;
+  event_url: string;
+  image_url: string;
+  country: string;
+  city: string;
+  channel: string;
+  platform: string;
+  description: string;
+  year: number;
+  start_date: string;
+  end_date: string;
+  expiry_date: string;
+  created_date: string;
+  timezone: string;
+  from_admin: boolean;
+  virtual_event: boolean;
+  event_template_id: number;
+  private_event: boolean;
+}
+
+export interface PoapMintRequest {
+  event_id: number;
+  requested_codes: number;
+  secret_code: string;
+}
+
+export interface PoapEventDetails extends PoapDrop {
+  id: number;
+  fancy_id: string;
+  name: string;
+  event_url: string;
+  image_url: string;
+  country: string;
+  city: string;
+  description: string;
+  year: number;
+  start_date: string;
+  end_date: string;
+  expiry_date: string;
+  supply: number;
+}
+
+export interface PoapEventResponse {
+  id: number;
+  fancy_id: string;
+  name: string;
+  event_url?: string;
+  image_url: string;
+  country: string;
+  city: string;
+  description: string;
+  year: number;
+  start_date: string;
+  end_date: string;
+  expiry_date: string;
+  supply: number;
+}
+
+export interface ApiErrorResponse {
+  error: string;
+  message?: string;
+  status?: number;
+}
+
+export interface ApiResponse<T> {
+  data?: T;
+  error?: ApiErrorResponse;
+}
