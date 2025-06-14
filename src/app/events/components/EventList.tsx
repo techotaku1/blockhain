@@ -14,24 +14,39 @@ const FILTER_OPTIONS = {
   ] as const,
 };
 
+const STATUS_LABELS: Record<string, string> = {
+  ALL: 'Todos los Estados',
+  VOTING: 'En Votación',
+  APPROVED: 'Aprobado',
+  REJECTED: 'Rechazado',
+  IN_PROGRESS: 'En Progreso',
+};
+
+const TYPE_LABELS: Record<string, string> = {
+  ALL: 'Todos los Tipos',
+  SOCIAL_INTEREST: 'Interés Social',
+  DONATION: 'Donación',
+  KICKSTARTER: 'Crowdfunding',
+  PRIVATE_EVENT: 'Evento Privado',
+  SOCIAL_ENGAGEMENT: 'Compromiso Social',
+};
+
 export default function EventList() {
   const [events, setEvents] = useState<Event[]>([]);
   const [filters, setFilters] = useState({
     status: 'ALL',
     type: 'ALL',
   });
-
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        // TODO: Implement API call with filters
         const response = await fetch('/api/events');
         const data = await response.json();
         setEvents(data.events);
       } catch (error) {
-        console.error('Failed to fetch events:', error);
+        console.error('Error al cargar proyectos:', error);
       } finally {
         setIsLoading(false);
       }
@@ -55,9 +70,9 @@ export default function EventList() {
 
   return (
     <div className="space-y-6">
-      {/* Filters */}
+      {/* Filtros */}
       <div className="bg-card-dark border-border-dark flex items-center gap-4 rounded-lg border p-4">
-        <span className="text-text-muted">Filter by:</span>
+        <span className="text-text-muted">Filtrar por:</span>
 
         <select
           value={filters.status}
@@ -68,7 +83,7 @@ export default function EventList() {
         >
           {FILTER_OPTIONS.status.map((status) => (
             <option key={status} value={status}>
-              {status === 'ALL' ? 'All Status' : status}
+              {STATUS_LABELS[status]}
             </option>
           ))}
         </select>
@@ -82,18 +97,18 @@ export default function EventList() {
         >
           {FILTER_OPTIONS.type.map((type) => (
             <option key={type} value={type}>
-              {type === 'ALL' ? 'All Types' : type.replace('_', ' ')}
+              {TYPE_LABELS[type]}
             </option>
           ))}
         </select>
       </div>
 
-      {/* Events Grid */}
+      {/* Grid de Proyectos */}
       {events.length === 0 ? (
         <div className="text-text-muted flex flex-col items-center justify-center py-12">
-          <p className="text-lg">No events found</p>
+          <p className="text-lg">No se encontraron proyectos</p>
           <p className="mt-2">
-            Try adjusting your filters or create a new event
+            Intenta ajustar los filtros o crea un nuevo proyecto
           </p>
         </div>
       ) : (

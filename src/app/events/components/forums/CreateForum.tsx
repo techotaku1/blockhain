@@ -25,11 +25,11 @@ export function CreateForum({ eventId }: CreateForumProps) {
     };
 
     try {
-      // TODO: Add API call to create forum
+      // TODO: Añadir llamada a API para crear foro
       console.log(forumData);
       setIsOpen(false);
     } catch (error) {
-      console.error('Failed to create forum:', error);
+      console.error('Error al crear el foro:', error);
     }
   };
 
@@ -39,19 +39,19 @@ export function CreateForum({ eventId }: CreateForumProps) {
         onClick={() => setIsOpen(true)}
         className="bg-primary-light hover:bg-primary-light/90 rounded-lg px-4 py-2 text-white"
       >
-        New Discussion
+        Nueva Discusión
       </button>
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-card-dark border-border-dark w-full max-w-md rounded-lg border p-6">
             <h2 className="text-text-primary mb-4 text-xl font-bold">
-              Start New Discussion
+              Iniciar Nueva Discusión
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="text-text-primary block text-sm font-medium">
-                  Title
+                  Título
                 </label>
                 <input
                   type="text"
@@ -63,7 +63,7 @@ export function CreateForum({ eventId }: CreateForumProps) {
 
               <div>
                 <label className="text-text-primary block text-sm font-medium">
-                  Question/Topic
+                  Pregunta/Tema
                 </label>
                 <textarea
                   name="question"
@@ -79,13 +79,13 @@ export function CreateForum({ eventId }: CreateForumProps) {
                   onClick={() => setIsOpen(false)}
                   className="text-text-muted hover:text-text-primary bg-card-dark rounded px-4 py-2"
                 >
-                  Cancel
+                  Cancelar
                 </button>
                 <button
                   type="submit"
                   className="bg-primary-light hover:bg-primary-light/90 rounded px-4 py-2 text-white"
                 >
-                  Create
+                  Crear
                 </button>
               </div>
             </form>

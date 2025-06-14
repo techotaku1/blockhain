@@ -12,7 +12,7 @@ export async function ForumList({ eventId }: ForumListProps) {
   if (error) {
     return (
       <div className="text-error border-error/20 rounded-lg border p-4">
-        Failed to load forums
+        Error al cargar los foros
       </div>
     );
   }
@@ -20,7 +20,7 @@ export async function ForumList({ eventId }: ForumListProps) {
   if (!forums || forums.length === 0) {
     return (
       <div className="text-text-muted border-border-dark flex items-center justify-center rounded-lg border p-8">
-        No forums yet. Be the first to start a discussion!
+        No hay foros aún. ¡Sé el primero en iniciar una discusión!
       </div>
     );
   }
@@ -28,7 +28,7 @@ export async function ForumList({ eventId }: ForumListProps) {
   return (
     <div className="space-y-4">
       {forums.map((forum: Forum) => (
-      <ForumCard key={forum.id} forum={forum} />
+        <ForumCard key={forum.id} forum={forum} />
       ))}
     </div>
   );

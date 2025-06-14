@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importamos el locale español
 import type { Forum } from '~/types';
 
 interface ForumCardProps {
@@ -7,6 +8,19 @@ interface ForumCardProps {
 }
 
 export function ForumCard({ forum }: ForumCardProps) {
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'OPEN':
+        return 'Abierto';
+      case 'CLOSED':
+        return 'Cerrado';
+      case 'ARCHIVED':
+        return 'Archivado';
+      default:
+        return status;
+    }
+  };
+
   return (
     <Link
       href={`/forums/${forum.id}`}
@@ -28,15 +42,18 @@ export function ForumCard({ forum }: ForumCardProps) {
                 : 'bg-text-muted/20 text-text-muted'
           }`}
         >
-          {forum.status}
+          {getStatusLabel(forum.status)}
         </span>
       </div>
 
       <div className="text-text-muted mt-4 flex items-center justify-between text-sm">
         <div className="flex items-center space-x-4">
-          <span>By {forum.creatorId}</span>
+          <span>Por {forum.creatorId}</span>
           <span>•</span>
-          <span>{formatDistanceToNow(new Date(forum.createdAt))} ago</span>
+          <span>
+            hace{' '}
+            {formatDistanceToNow(new Date(forum.createdAt), { locale: es })}
+          </span>
         </div>
         <div className="flex items-center space-x-2">
           <span>👍 {forum.upvotes}</span>
