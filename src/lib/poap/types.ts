@@ -89,6 +89,12 @@ export interface PoapEventResponse {
 }
 
 export interface ApiErrorResponse {
-  message: string;
+  error: string;
+  message?: string;
   status?: number;
+}
+
+export interface ApiResponse<T> {
+  data?: T;
+  error?: ApiErrorResponse;
 }

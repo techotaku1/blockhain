@@ -45,12 +45,6 @@ export default function RootLayout({
               <a href="/rewards" className="text-blue-600 hover:text-blue-800">
                 My Rewards
               </a>
-              <a
-                href="/poap-test"
-                className="text-blue-600 hover:text-blue-800"
-              >
-                POAP Test
-              </a>
             </nav>
             <div className="flex items-center gap-4">
               <SignedOut>
