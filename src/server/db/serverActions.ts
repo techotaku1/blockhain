@@ -96,7 +96,10 @@ export async function saveUserFromClerk({
   name: string;
 }) {
   // Evita duplicados
-  const exists = await db.select().from(users).where(sql`${users.id} = ${id}`);
+  const exists = await db
+    .select()
+    .from(users)
+    .where(sql`${users.id} = ${id}`);
   if (exists.length === 0) {
     await db.insert(users).values({ id, email, name });
   }

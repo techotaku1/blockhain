@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-// Puedes definir variables de entorno aquí si las necesitas
-// Por ejemplo:
-// process.env.MY_ENV_VAR = 'valor';
-=======
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
 
@@ -54,4 +49,3 @@ export const env = createEnv({
    */
   emptyStringAsUndefined: true,
 });
->>>>>>> 344398032f30454eae7f8cc3dec61b590dac2919
