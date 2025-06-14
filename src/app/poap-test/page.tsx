@@ -6,9 +6,7 @@ import Image from 'next/image';
 
 import { useUser } from '@clerk/nextjs';
 
-import { PoapAPI } from '~/lib/poap/api';
-
-import type { PoapDrop } from '~/lib/poap/types';
+import type { PoapDrop, PoapDropInput } from '~/lib/poap/types';
 
 export default function PoapTestPage() {
   const { isSignedIn, isLoaded } = useUser();
@@ -28,29 +26,19 @@ export default function PoapTestPage() {
   };
 
   const handleTest = async () => {
-    if (!isSignedIn) {
-      setError('Please sign in first');
-      return;
-    }
-
-    if (!imageFile) {
-      setError('Please upload an image first');
-      return;
-    }
+    if (!isSignedIn || !imageFile) return;
 
     setLoading(true);
     setError('');
 
     try {
-      // Convert image to base64
       const base64Image = await new Promise<string>((resolve) => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result as string);
         reader.readAsDataURL(imageFile);
       });
 
-      const api = new PoapAPI();
-      const event = await api.createDrop({
+      const dropInput: PoapDropInput = {
         name: 'Environmental Report',
         description: 'Recognition for environmental contribution',
         city: 'Global',
@@ -65,11 +53,21 @@ export default function PoapTestPage() {
         image: base64Image,
         email: 'your-email@domain.com',
         requested_codes: 1,
+      };
+
+      const response = await fetch('/api/poap', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dropInput),
       });
 
-      setResult(event);
+      if (!response.ok) {
+        throw new Error('Failed to create POAP');
+      }
+
+      const result = await response.json();
+      setResult(result);
     } catch (err) {
-      console.error('API Error:', err);
       setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
       setLoading(false);
