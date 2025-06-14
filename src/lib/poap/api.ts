@@ -9,11 +9,18 @@ const POAP_API_URL = 'https://api.poap.tech';
 
 export class PoapAPI {
   private apiKey: string;
+  private clientSecret: string;
 
   constructor() {
-    const apiKey = process.env.NEXT_PUBLIC_POAP_API_KEY;
+    // Usar las variables del servidor sin NEXT_PUBLIC_
+    const apiKey = process.env.POAP_API_KEY;
+    const clientSecret = process.env.POAP_CLIENT_SECRET;
+
     if (!apiKey) throw new Error('POAP API key is required');
+    if (!clientSecret) throw new Error('POAP client secret is required');
+
     this.apiKey = apiKey;
+    this.clientSecret = clientSecret;
   }
 
   private async fetch<T>(
@@ -21,19 +28,19 @@ export class PoapAPI {
     options: RequestInit = {}
   ): Promise<T> {
     try {
-      console.log('Fetching:', `${POAP_API_URL}${endpoint}`);
-      console.log('Headers:', {
-        'Content-Type': 'application/json',
-        'X-API-Key': `${this.apiKey.substring(0, 10)}...`,
-      });
-
       const response = await fetch(`${POAP_API_URL}${endpoint}`, {
         ...options,
         headers: {
           'Content-Type': 'application/json',
           'X-API-Key': this.apiKey,
+          'Access-Control-Allow-Origin': '*',
+          // Remove Authorization header as we're using X-API-Key
         },
       });
+
+      // Log the response for debugging
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers));
 
       const responseData = (await response.json()) as T | ApiErrorResponse;
 
@@ -46,10 +53,8 @@ export class PoapAPI {
 
       return responseData as T;
     } catch (error) {
-      if (error instanceof Error) {
-        throw error;
-      }
-      throw new Error('Unknown error occurred');
+      console.error('Full error details:', error);
+      throw error;
     }
   }
 

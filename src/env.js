@@ -11,6 +11,8 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(['development', 'test', 'production'])
       .default('development'),
+    POAP_API_KEY: z.string().min(1),
+    POAP_CLIENT_SECRET: z.string().min(1),
   },
 
   /**
@@ -19,14 +21,7 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // Validación de la API key de POAP que debe ser un JWT válido
-    NEXT_PUBLIC_POAP_API_KEY: z
-      .string()
-      .min(1)
-      .refine((val) => {
-        const parts = val.split('.');
-        return parts.length === 3; // Asegura que sea un JWT válido
-      }, 'Invalid POAP API key format'),
+    NEXT_PUBLIC_POAP_CLIENT_ID: z.string().min(1),
   },
 
   /**
@@ -36,7 +31,9 @@ export const env = createEnv({
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
-    NEXT_PUBLIC_POAP_API_KEY: process.env.NEXT_PUBLIC_POAP_API_KEY,
+    POAP_API_KEY: process.env.POAP_API_KEY,
+    POAP_CLIENT_SECRET: process.env.POAP_CLIENT_SECRET,
+    NEXT_PUBLIC_POAP_CLIENT_ID: process.env.NEXT_PUBLIC_POAP_CLIENT_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
