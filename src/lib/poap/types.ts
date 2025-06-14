@@ -30,16 +30,24 @@ export interface PoapDrop {
   id: number;
   fancy_id: string;
   name: string;
+  location_type: string;
   event_url: string;
   image_url: string;
   country: string;
   city: string;
+  channel: string;
+  platform: string;
   description: string;
   year: number;
   start_date: string;
   end_date: string;
   expiry_date: string;
-  status: string;
+  created_date: string;
+  timezone: string;
+  from_admin: boolean;
+  virtual_event: boolean;
+  event_template_id: number;
+  private_event: boolean;
 }
 
 export interface PoapMintRequest {
