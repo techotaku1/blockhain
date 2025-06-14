@@ -1,54 +1,46 @@
-import type {
-  PoapDrop,
-  PoapDropInput,
-  PoapMintRequest,
-  ApiErrorResponse,
-} from './types';
+import type { PoapDrop, PoapDropInput } from './types';
 
 const POAP_API_URL = 'https://api.poap.tech';
 
-interface PoapApiError {
+interface ApiErrorResponse {
+  status: number;
   message: string;
-  status?: number;
 }
 
 export class PoapAPI {
-  private apiKey: string;
-  private clientSecret: string;
+  private readonly apiKey: string;
 
   constructor() {
     const apiKey = process.env.POAP_API_KEY;
-    const clientSecret = process.env.POAP_CLIENT_SECRET;
-
     if (!apiKey) throw new Error('POAP API key is required');
-    if (!clientSecret) throw new Error('POAP client secret is required');
-
     this.apiKey = apiKey;
-    this.clientSecret = clientSecret;
   }
 
-  private async fetch<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
+  private async fetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     try {
-      const response = await fetch(`${POAP_API_URL}${endpoint}`, {
+      // Build URL with API key as query parameter like in Thunder Client
+      const url = new URL(`${POAP_API_URL}${endpoint}`);
+      url.searchParams.append('X-API-Key', this.apiKey);
+      url.searchParams.append('Content-Type', 'application/json');
+
+      console.log('Making request to:', url.toString());
+
+      const response = await fetch(url.toString(), {
         ...options,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key': this.apiKey,
-          'Client-Secret': this.clientSecret,
-        },
+        // No headers needed since we're using URL params
       });
 
-      const responseText = await response.text();
-      const responseData = JSON.parse(responseText) as T | PoapApiError;
+      let responseData: unknown;
+      try {
+        responseData = await response.json();
+      } catch (_error) {
+        throw new Error('Invalid JSON response from POAP API');
+      }
 
       if (!response.ok) {
-        const error = responseData as PoapApiError;
-        throw new Error(
-          `POAP API error: ${response.status} - ${error.message ?? 'Unknown error'}`
-        );
+        const errorData = responseData as ApiErrorResponse;
+        const errorMessage = errorData?.message ?? 'Unknown error';
+        throw new Error(`POAP API error: ${response.status} - ${errorMessage}`);
       }
 
       return responseData as T;
@@ -59,53 +51,43 @@ export class PoapAPI {
   }
 
   async createDrop(params: PoapDropInput): Promise<PoapDrop> {
-    // Format dates correctly
-    const startDate = new Date(params.start_date);
-    const endDate = new Date(params.end_date);
-    const expiryDate = new Date(params.expiry_date);
+    const now = new Date();
+    const formatDate = (date: Date) => {
+      return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+    };
+
+    const payload = {
+      fancy_id: `environmental-report-${Date.now()}`,
+      name: '[TEST] Environmental Report',
+      description: 'TEST - Initial validation of POAP integration',
+      location_type: 'virtual',
+      event_url: params.event_url || '',
+      image_url: params.image,
+      country: 'World',
+      city: 'Virtual',
+      platform: 'web',
+      year: now.getFullYear(),
+      start_date: formatDate(now),
+      end_date: formatDate(now),
+      expiry_date: formatDate(new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)),
+      from_admin: true,
+      virtual_event: true,
+      event_template_id: 0,
+      private_event: true
+    };
+
+    console.log('Creating POAP with:', {
+      ...payload,
+      image_url: '[REDACTED]',
+    });
 
     return this.fetch<PoapDrop>('/events', {
       method: 'POST',
-      body: JSON.stringify({
-        name: params.name,
-        description: params.description,
-        city: params.city || 'Virtual',
-        country: params.country || 'Global',
-        start_date: startDate.toISOString().split('T')[0],
-        end_date: endDate.toISOString().split('T')[0],
-        expiry_date: expiryDate.toISOString().split('T')[0],
-        year: new Date().getFullYear(),
-        event_url: params.event_url,
-        virtual_event: true,
-        private_event: false,
-        secret_code: Math.random().toString(36).substring(2, 8).toUpperCase(),
-        event_template_id: 0,
-        image: params.image,
-        email: params.email,
-        requested_codes: params.requested_codes,
-        channel: 'website',
-        platform: 'web',
-        location_type: 'virtual',
-      }),
-    });
-  }
-
-  async createMintRequest(params: PoapMintRequest): Promise<void> {
-    return this.fetch<void>('/redeem-request', {
-      method: 'POST',
-      body: JSON.stringify({
-        ...params,
-        redeem_type: 'qr_code',
-      }),
-    });
-  }
-
-  async getEventById(eventId: number | string): Promise<PoapDrop> {
-    return this.fetch<PoapDrop>(`/events/id/${eventId}`, {
-      method: 'GET',
-      headers: {
-        'X-API-Key': this.apiKey,
-      },
+      body: JSON.stringify(payload),
     });
   }
 }
