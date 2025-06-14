@@ -7,12 +7,16 @@ import type {
 
 const POAP_API_URL = 'https://api.poap.tech';
 
+interface PoapApiError {
+  message: string;
+  status?: number;
+}
+
 export class PoapAPI {
   private apiKey: string;
   private clientSecret: string;
 
   constructor() {
-    // Usar las variables del servidor sin NEXT_PUBLIC_
     const apiKey = process.env.POAP_API_KEY;
     const clientSecret = process.env.POAP_CLIENT_SECRET;
 
@@ -33,39 +37,55 @@ export class PoapAPI {
         headers: {
           'Content-Type': 'application/json',
           'X-API-Key': this.apiKey,
-          'Access-Control-Allow-Origin': '*',
-          // Remove Authorization header as we're using X-API-Key
+          'Client-Secret': this.clientSecret,
         },
       });
 
-      // Log the response for debugging
-      console.log('Response status:', response.status);
-      console.log('Response headers:', Object.fromEntries(response.headers));
-
-      const responseData = (await response.json()) as T | ApiErrorResponse;
+      const responseText = await response.text();
+      const responseData = JSON.parse(responseText) as T | PoapApiError;
 
       if (!response.ok) {
-        const errorData = responseData as ApiErrorResponse;
+        const error = responseData as PoapApiError;
         throw new Error(
-          `POAP API error: ${response.status} - ${errorData.message}`
+          `POAP API error: ${response.status} - ${error.message ?? 'Unknown error'}`
         );
       }
 
       return responseData as T;
     } catch (error) {
-      console.error('Full error details:', error);
+      console.error('POAP API Error:', error);
       throw error;
     }
   }
 
   async createDrop(params: PoapDropInput): Promise<PoapDrop> {
+    // Format dates correctly
+    const startDate = new Date(params.start_date);
+    const endDate = new Date(params.end_date);
+    const expiryDate = new Date(params.expiry_date);
+
     return this.fetch<PoapDrop>('/events', {
       method: 'POST',
       body: JSON.stringify({
-        ...params,
+        name: params.name,
+        description: params.description,
+        city: params.city || 'Virtual',
+        country: params.country || 'Global',
+        start_date: startDate.toISOString().split('T')[0],
+        end_date: endDate.toISOString().split('T')[0],
+        expiry_date: expiryDate.toISOString().split('T')[0],
+        year: new Date().getFullYear(),
+        event_url: params.event_url,
         virtual_event: true,
         private_event: false,
-        secret_code: Math.random().toString(36).substring(2, 8),
+        secret_code: Math.random().toString(36).substring(2, 8).toUpperCase(),
+        event_template_id: 0,
+        image: params.image,
+        email: params.email,
+        requested_codes: params.requested_codes,
+        channel: 'website',
+        platform: 'web',
+        location_type: 'virtual',
       }),
     });
   }

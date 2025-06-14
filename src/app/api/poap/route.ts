@@ -2,30 +2,28 @@ import { NextResponse } from 'next/server';
 
 import { PoapAPI } from '~/lib/poap/api';
 
-import type { PoapDropInput } from '~/lib/poap/types';
+import type { PoapRequestData, PoapDrop, ApiResponse } from '~/lib/poap/types';
 
 export async function POST(request: Request) {
   try {
-    const data = (await request.json()) as PoapDropInput;
-
-    // Validate required fields
-    if (!data.name || !data.description || !data.image) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
-
+    const requestData = (await request.json()) as PoapRequestData;
     const api = new PoapAPI();
-    const result = await api.createDrop(data);
 
-    return NextResponse.json(result);
+    const dropInput = {
+      ...requestData,
+      year: new Date().getFullYear(),
+    };
+
+    const poapResult = await api.createDrop(dropInput);
+
+    return NextResponse.json({
+      data: poapResult,
+    } as ApiResponse<PoapDrop>);
   } catch (error) {
     console.error('POAP API Error:', error);
     return NextResponse.json(
       {
-        error:
-          error instanceof Error ? error.message : 'Failed to create POAP drop',
+        error: error instanceof Error ? error.message : 'Internal server error',
       },
       { status: 500 }
     );

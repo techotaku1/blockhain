@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import Image from 'next/image';
 
-import { useUser } from '@clerk/nextjs';
+import { useUser, SignInButton } from '@clerk/nextjs';
 
 import type { PoapDrop, ApiResponse } from '~/lib/poap/types';
 
@@ -17,14 +17,16 @@ export default function Home() {
   const [previewUrl, setPreviewUrl] = useState<string>('');
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] ?? null;
-    setImageFile(file);
+    if (!isSignedIn) {
+      event.preventDefault();
+      return;
+    }
 
+    const file = event.target.files?.[0] ?? null;
     if (file) {
+      setImageFile(file);
       const objectUrl = URL.createObjectURL(file);
       setPreviewUrl(objectUrl);
-
-      // Free up memory when the component is unmounted or the file is changed
       return () => URL.revokeObjectURL(objectUrl);
     }
   };
@@ -66,80 +68,166 @@ export default function Home() {
       const responseData = (await response.json()) as ApiResponse<PoapDrop>;
 
       if (!response.ok || responseData.error) {
-        throw new Error(responseData.error?.message ?? 'Failed to create POAP');
+        throw new Error(
+          typeof responseData.error === 'string'
+            ? responseData.error
+            : 'Failed to create POAP'
+        );
       }
 
       if (responseData.data) {
         setResult(responseData.data);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error occurred');
+      const errorMessage =
+        err instanceof Error ? err.message : 'An unexpected error occurred';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="mb-8 text-center text-4xl font-bold">
-        Ethereum Community Forum
-      </h1>
+  // Move file input outside of form to prevent native browser upload
+  const FileUploadArea = () => (
+    <div className="relative">
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleImageUpload}
+        className="hidden"
+        id="file-upload"
+        disabled={!isSignedIn}
+      />
+      <label
+        htmlFor="file-upload"
+        className={`flex min-h-[100px] flex-col items-center justify-center rounded-lg border-2 border-dashed px-4 py-6 text-center transition-colors ${
+          !isSignedIn
+            ? 'cursor-not-allowed border-gray-200 bg-gray-100'
+            : 'cursor-pointer border-gray-300 bg-gray-50 hover:bg-gray-100'
+        }`}
+      >
+        <svg
+          className={`mb-3 h-10 w-10 ${
+            !isSignedIn ? 'text-gray-300' : 'text-gray-400'
+          }`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        </svg>
+        {!isSignedIn ? (
+          <>
+            <p className="mb-2 text-sm font-semibold text-gray-400">
+              Sign in required
+            </p>
+            <p className="text-xs text-gray-400">
+              Please sign in to upload images and create POAPs
+            </p>
+            <SignInButton>
+              <button className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
+                Sign In to Continue
+              </button>
+            </SignInButton>
+          </>
+        ) : (
+          <>
+            <p className="mb-2 text-sm font-semibold text-gray-700">
+              Click to upload image
+            </p>
+            <p className="text-xs text-gray-500">PNG or JPG (MAX. 800x800px)</p>
+          </>
+        )}
+      </label>
+    </div>
+  );
 
-      <div className="grid gap-6">
-        <div className="rounded-lg bg-white p-6 shadow-md transition-shadow hover:shadow-lg">
-          <div className="flex items-start justify-between">
-            <div>
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-gray-50 py-8">
+      <div className="mx-auto w-full max-w-2xl px-4">
+        <h1 className="mb-8 text-center text-4xl font-bold">
+          Environmental Reports
+        </h1>
+
+        {!isSignedIn ? (
+          <div className="rounded-xl bg-white p-8 text-center shadow-lg">
+            <h2 className="mb-4 text-2xl font-semibold text-gray-800">
+              🌟 Create Your Environmental POAP
+            </h2>
+            <p className="mb-6 text-gray-600">
+              Sign in to start creating POAPs for your environmental
+              contributions
+            </p>
+            <SignInButton>
+              <button className="rounded-lg bg-blue-600 px-8 py-3 text-lg font-semibold text-white transition-colors hover:bg-blue-700">
+                Sign In to Get Started
+              </button>
+            </SignInButton>
+          </div>
+        ) : (
+          <div className="rounded-xl bg-white p-8 shadow-lg">
+            <div className="mb-6">
               <h2 className="text-xl font-semibold text-blue-600">
                 Create a POAP
               </h2>
               <p className="mt-2 text-gray-600">
-                Issue a POAP for your event or contribution
+                Issue a POAP for your environmental contribution
               </p>
             </div>
-          </div>
 
-          <div className="mt-4">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="mb-4 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-            />
-            {previewUrl && (
-              <div className="mb-4">
-                <Image
-                  src={previewUrl}
-                  alt="Image preview"
-                  width={200}
-                  height={200}
-                  className="rounded-md"
-                />
-              </div>
-            )}
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="w-full rounded-md bg-blue-600 px-4 py-2 font-semibold text-white transition-all hover:bg-blue-700 disabled:opacity-50"
-            >
-              {loading ? 'Creating POAP...' : 'Create POAP'}
-            </button>
+            <div className="space-y-6">
+              <FileUploadArea />
 
-            {error && <p className="mt-4 text-center text-red-500">{error}</p>}
-            {result && (
-              <div className="mt-4 rounded-md bg-green-100 p-4 text-green-800">
-                POAP created!{' '}
-                <a
-                  href={`https://your-app.com/poap/${result.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-semibold underline"
-                >
-                  View POAP
-                </a>
-              </div>
-            )}
+              {previewUrl && (
+                <div className="mt-4 flex justify-center">
+                  <div className="relative h-48 w-48 overflow-hidden rounded-lg">
+                    <Image
+                      src={previewUrl}
+                      alt="Preview"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <button
+                onClick={handleSubmit}
+                disabled={loading || !imageFile || !isSignedIn}
+                className="w-full rounded-md bg-blue-600 px-4 py-2 font-semibold text-white transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
+              >
+                {!isSignedIn
+                  ? 'Sign in to Create POAP'
+                  : loading
+                    ? 'Creating POAP...'
+                    : 'Create POAP'}
+              </button>
+
+              {error && (
+                <p className="mt-4 text-center text-red-500">{error}</p>
+              )}
+              {result && (
+                <div className="mt-4 rounded-md bg-green-100 p-4 text-green-800">
+                  POAP created!{' '}
+                  <a
+                    href={`https://your-app.com/poap/${result.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold underline"
+                  >
+                    View POAP
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </main>
   );
