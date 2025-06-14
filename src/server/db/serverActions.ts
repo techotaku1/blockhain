@@ -1,7 +1,7 @@
 'use server';
 
-import { db } from '~/server/db'; // Ajusta la ruta según tu estructura
-import { userPoints, users, userHistory } from '~/server/db/schema';
+import { db } from '~/server/db'; // Ajusta la ruta según la ubicación real de tu archivo db
+import { userPoints, users, userHistory } from './schema';
 import { sql } from 'drizzle-orm';
 
 export async function createUserPoint(formData: FormData) {
