@@ -27,8 +27,19 @@ export interface PoapDropInput {
 }
 
 export interface PoapDrop {
-  event_id: number;
-  secret_code: string;
+  id: number;
+  fancy_id: string;
+  name: string;
+  event_url: string;
+  image_url: string;
+  country: string;
+  city: string;
+  description: string;
+  year: number;
+  start_date: string;
+  end_date: string;
+  expiry_date: string;
+  status: string;
 }
 
 export interface PoapMintRequest {
@@ -67,4 +78,9 @@ export interface PoapEventResponse {
   end_date: string;
   expiry_date: string;
   supply: number;
+}
+
+export interface ApiErrorResponse {
+  message: string;
+  status?: number;
 }

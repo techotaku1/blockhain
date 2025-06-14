@@ -1,61 +1,26 @@
 'use client';
 
 import { useState } from 'react';
-
 import { PoapAPI } from '~/lib/poap/api';
-
-import type { PoapEventResponse, PoapDrop } from '~/lib/poap/types';
 
 export default function PoapTestPage() {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<PoapEventResponse | PoapDrop | null>(
-    null
-  );
+  const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string>('');
-  const poapApi = new PoapAPI();
 
-  // Test de conexión básica
-  const testConnection = async () => {
+  const handleTest = async () => {
     setLoading(true);
     setError('');
-    try {
-      const result = await poapApi.getEventById(16947);
-      setResult(result);
-      console.log('POAP Response:', result);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-      console.error('POAP Error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  // Test de creación de drop
-  const testCreateDrop = async () => {
-    setLoading(true);
-    setError('');
     try {
-      const drop = await poapApi.createDrop({
-        name: 'Environmental Report Test',
-        description: 'Test drop for environmental reporting system',
-        city: 'Test City',
-        country: 'Test Country',
-        start_date: new Date().toISOString(),
-        end_date: new Date().toISOString(),
-        expiry_date: new Date(
-          Date.now() + 30 * 24 * 60 * 60 * 1000
-        ).toISOString(),
-        year: new Date().getFullYear(),
-        event_url: 'https://test-event.com',
-        image: 'YOUR_BASE64_IMAGE',
-        email: 'your-email@domain.com',
-        requested_codes: 1,
-      });
-      setResult(drop);
-      console.log('Drop Created:', drop);
+      console.log('Starting POAP API test...');
+      const api = new PoapAPI();
+      const event = await api.getEventById('16947');
+      console.log('API Response:', event);
+      setResult(event);
     } catch (err) {
+      console.error('API Error:', err);
       setError(err instanceof Error ? err.message : 'Unknown error');
-      console.error('Drop Creation Error:', err);
     } finally {
       setLoading(false);
     }
@@ -63,35 +28,31 @@ export default function PoapTestPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="mb-4 text-2xl font-bold">POAP Integration Test</h1>
-
-      <div className="space-y-4">
-        <button
-          onClick={testConnection}
-          disabled={loading}
-          className="rounded bg-blue-500 px-4 py-2 text-white disabled:bg-gray-400"
-        >
-          {loading ? 'Testing...' : 'Test POAP Connection'}
-        </button>
+      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <h1 className="text-2xl font-bold mb-6">POAP API Test</h1>
 
         <button
-          onClick={testCreateDrop}
+          onClick={handleTest}
           disabled={loading}
-          className="ml-4 rounded bg-green-500 px-4 py-2 text-white disabled:bg-gray-400"
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mb-4 disabled:bg-gray-400"
         >
-          {loading ? 'Creating...' : 'Test Create Drop'}
+          {loading ? 'Testing...' : 'Test POAP API'}
         </button>
 
         {error && (
-          <div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
-            {error}
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+            <p className="font-bold">Error</p>
+            <p>{error}</p>
           </div>
         )}
 
         {result && (
-          <pre className="overflow-auto rounded bg-gray-100 p-4">
-            {JSON.stringify(result, null, 2)}
-          </pre>
+          <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4">
+            <p className="font-bold">Success!</p>
+            <pre className="mt-2 overflow-auto">
+              {JSON.stringify(result, null, 2)}
+            </pre>
+          </div>
         )}
       </div>
     </div>

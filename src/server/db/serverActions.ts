@@ -1,6 +1,7 @@
 'use server';
 
-import { db } from '~/server/db'; // Ajusta la ruta según la ubicación real de tu archivo db
+// Ajusta la ruta según la ubicación real de tu archivo db
+import { db } from '~/server/db'; // Asegúrate que este archivo exporta db
 import { userPoints, users, userHistory } from './schema';
 import { sql } from 'drizzle-orm';
 
@@ -104,3 +105,4 @@ export async function saveUserFromClerk({
     await db.insert(users).values({ id, email, name });
   }
 }
+// export { db }; // Removed to comply with "use server" restrictions

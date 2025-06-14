@@ -1,42 +1,61 @@
-import type { PoapDrop, PoapDropInput, PoapMintRequest } from './types';
+import type {
+  PoapDrop,
+  PoapDropInput,
+  PoapMintRequest,
+  ApiErrorResponse,
+} from './types';
 
 const POAP_API_URL = 'https://api.poap.tech';
 
 export class PoapAPI {
   private apiKey: string;
+  private clientSecret: string;
 
   constructor() {
-    const apiKey = process.env.NEXT_PUBLIC_POAP_API_KEY;
+    // Usar las variables del servidor sin NEXT_PUBLIC_
+    const apiKey = process.env.POAP_API_KEY;
+    const clientSecret = process.env.POAP_CLIENT_SECRET;
+
     if (!apiKey) throw new Error('POAP API key is required');
+    if (!clientSecret) throw new Error('POAP client secret is required');
+
     this.apiKey = apiKey;
+    this.clientSecret = clientSecret;
   }
 
   private async fetch<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const headers = new Headers({
-      'Content-Type': 'application/json',
-      'X-API-Key': this.apiKey,
-    });
-
-    const response = await fetch(`${POAP_API_URL}${endpoint}`, {
-      ...options,
-      headers,
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('API Response:', {
-        status: response.status,
-        statusText: response.statusText,
-        headers: Object.fromEntries(response.headers),
-        error: errorText,
+    try {
+      const response = await fetch(`${POAP_API_URL}${endpoint}`, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': this.apiKey,
+          'Access-Control-Allow-Origin': '*',
+          // Remove Authorization header as we're using X-API-Key
+        },
       });
-      throw new Error(`POAP API error: ${response.statusText} - ${errorText}`);
-    }
 
-    return response.json() as Promise<T>;
+      // Log the response for debugging
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers));
+
+      const responseData = (await response.json()) as T | ApiErrorResponse;
+
+      if (!response.ok) {
+        const errorData = responseData as ApiErrorResponse;
+        throw new Error(
+          `POAP API error: ${response.status} - ${errorData.message}`
+        );
+      }
+
+      return responseData as T;
+    } catch (error) {
+      console.error('Full error details:', error);
+      throw error;
+    }
   }
 
   async createDrop(params: PoapDropInput): Promise<PoapDrop> {

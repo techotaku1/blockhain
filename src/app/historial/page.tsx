@@ -108,11 +108,11 @@ export default function HistorialPage() {
             <div className="border-border-light h-64 w-full overflow-hidden rounded-xl border">
               {/* Puedes reemplazar el src por un mapa real o integración */}
               <iframe
+                className="map-iframe"
                 title="Mapa de reciclaje"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.870759740072!2d-74.08175368467654!3d4.609710343446627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f99a4b2b2b2b3%3A0x2e7d32!2sBogotá!5e0!3m2!1ses!2sco!4v1688765432101!5m2!1ses!2sco"
                 width="100%"
                 height="100%"
-                style={{ border: 0 }}
                 allowFullScreen={true}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
