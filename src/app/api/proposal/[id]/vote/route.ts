@@ -72,3 +72,16 @@ export async function POST(
     return NextResponse.json({ error: 'Error inesperado' }, { status: 500 })
   }
 }
+
+
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const votesList = await db
+    .select()
+    .from(votes)
+    .where(eq(votes.proposalId, params.id));
+
+  return NextResponse.json(votesList);
+}
