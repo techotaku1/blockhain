@@ -1,15 +1,16 @@
 'use client';
 import React, { useState } from 'react';
+import { FaGift, FaMedal, FaLeaf, FaArrowRight } from 'react-icons/fa';
+
 import { Sidebar } from '~/components/Sidebar';
 import { TopBar } from '~/components/TopBar';
-import { FaGift, FaBook, FaTrophy, FaArrowRight } from 'react-icons/fa';
 import { Progress } from '~/components/ui/progress'; // Ajusta la ruta según tu estructura shadcn/ui
 
 const REWARDS = [
   {
     nombre: 'Curso de Reciclaje',
     descripcion: 'Acceso a un curso online sobre reciclaje y sostenibilidad.',
-    icono: <FaBook className="text-2xl text-[#2962FF]" />,
+    icono: <FaMedal className="text-2xl text-[#2962FF]" />,
     puntosNecesarios: 200,
   },
   {
@@ -21,7 +22,7 @@ const REWARDS = [
   {
     nombre: 'Trofeo Reciclador',
     descripcion: 'Premio físico por tu compromiso con el reciclaje.',
-    icono: <FaTrophy className="text-2xl text-[#FFD700]" />,
+    icono: <FaLeaf className="text-2xl text-[#FFD700]" />,
     puntosNecesarios: 500,
   },
 ];

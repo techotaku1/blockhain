@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
+
 import { PoapAPI } from '~/lib/poap/api';
 
 export default function PoapTestPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string>('');
+  const [poaps, setPoaps] = React.useState<string[]>([]); // Usa el tipo adecuado en vez de any
 
   const handleTest = async () => {
     setLoading(true);
@@ -28,26 +30,26 @@ export default function PoapTestPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
-        <h1 className="text-2xl font-bold mb-6">POAP API Test</h1>
+      <div className="mx-auto max-w-2xl rounded-lg bg-white p-6 shadow-lg">
+        <h1 className="mb-6 text-2xl font-bold">POAP API Test</h1>
 
         <button
           onClick={handleTest}
           disabled={loading}
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mb-4 disabled:bg-gray-400"
+          className="mb-4 w-full rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600 disabled:bg-gray-400"
         >
           {loading ? 'Testing...' : 'Test POAP API'}
         </button>
 
         {error && (
-          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+          <div className="mb-4 border-l-4 border-red-500 bg-red-100 p-4 text-red-700">
             <p className="font-bold">Error</p>
             <p>{error}</p>
           </div>
         )}
 
         {result && (
-          <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4">
+          <div className="border-l-4 border-green-500 bg-green-100 p-4 text-green-700">
             <p className="font-bold">Success!</p>
             <pre className="mt-2 overflow-auto">
               {JSON.stringify(result, null, 2)}

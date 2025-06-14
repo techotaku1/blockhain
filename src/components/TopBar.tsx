@@ -1,18 +1,19 @@
 import React from 'react';
 import {
-  FaLeaf,
-  FaGift,
-  FaBell,
-  FaSignInAlt,
-  FaUserPlus,
-} from 'react-icons/fa';
-import {
   UserButton,
   SignedIn,
   SignedOut,
   SignInButton,
   SignUpButton,
 } from '@clerk/clerk-react';
+
+import {
+  FaLeaf,
+  FaGift,
+  FaBell,
+  FaSignInAlt,
+  FaUserPlus,
+} from 'react-icons/fa';
 
 interface TopBarProps {
   puntos: number;

@@ -1,12 +1,16 @@
 import React from 'react';
+
+import Link from 'next/link';
+
 import {
-  FaLeaf,
+  FaHome,
   FaHistory,
   FaGift,
-  FaUser,
-  FaUsers,
   FaQrcode,
   FaExclamationTriangle,
+  FaLeaf,
+  FaUser,
+  FaUsers,
 } from 'react-icons/fa';
 
 interface SidebarProps {
@@ -15,49 +19,49 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ active }) => (
   <aside className="sidebar-min-height sticky top-[64px] z-10 flex h-screen w-20 flex-col gap-2 rounded-tr-2xl rounded-br-2xl bg-[#AED581] px-2 py-8 font-semibold text-[#2E7D32] shadow-lg lg:flex xl:w-56 xl:px-4">
-    <a
+    <Link
       href="/dashboard"
       className={`group flex flex-col items-center gap-1 rounded-2xl py-4 transition hover:bg-[#c5e1a5] ${active === 'dashboard' ? 'bg-[#c5e1a5]' : ''}`}
     >
       <FaLeaf className="text-2xl" />
       <span className="hidden group-hover:underline xl:block">Dashboard</span>
-    </a>
-    <a
+    </Link>
+    <Link
       href="/historial"
       className={`group flex flex-col items-center gap-1 rounded-2xl py-4 transition hover:bg-[#c5e1a5] ${active === 'historial' ? 'bg-[#c5e1a5]' : ''}`}
     >
       <FaHistory className="text-2xl" />
       <span className="hidden group-hover:underline xl:block">Historial</span>
-    </a>
-    <a
+    </Link>
+    <Link
       href="/recompensas    "
       className={`group flex flex-col items-center gap-1 rounded-2xl py-4 transition hover:bg-[#c5e1a5] ${active === 'recompensas' ? 'bg-[#c5e1a5]' : ''}`}
     >
       <FaGift className="text-2xl" />
       <span className="hidden group-hover:underline xl:block">Recompensas</span>
-    </a>
-    <a
+    </Link>
+    <Link
       href="#"
       className={`group flex flex-col items-center gap-1 rounded-2xl py-4 transition hover:bg-[#c5e1a5] ${active === 'perfil' ? 'bg-[#c5e1a5]' : ''}`}
     >
       <FaUser className="text-2xl" />
       <span className="hidden group-hover:underline xl:block">Perfil</span>
-    </a>
-    <a
+    </Link>
+    <Link
       href="#"
       className={`group flex flex-col items-center gap-1 rounded-2xl py-4 transition hover:bg-[#c5e1a5] ${active === 'comunidad' ? 'bg-[#c5e1a5]' : ''}`}
     >
       <FaUsers className="text-2xl" />
       <span className="hidden group-hover:underline xl:block">Proyectos</span>
-    </a>
-    <a
+    </Link>
+    <Link
       href="/"
       className={`group flex flex-col items-center gap-1 rounded-2xl py-4 transition hover:bg-[#c5e1a5] ${active === 'poap' ? 'bg-[#c5e1a5]' : ''}`}
     >
       <FaQrcode className="text-2xl" />
       <span className="hidden group-hover:underline xl:block">POAP</span>
-    </a>
-    <a
+    </Link>
+    <Link
       href="/reporte-zona"
       className={`group flex flex-col items-center gap-1 rounded-2xl py-4 transition hover:bg-[#c5e1a5] ${active === 'reporte-zona' ? 'bg-[#c5e1a5]' : ''}`}
     >
@@ -65,6 +69,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ active }) => (
       <span className="hidden group-hover:underline xl:block">
         Reporte Zona
       </span>
-    </a>
+    </Link>
+    <nav>
+      <Link
+        href="/"
+        className={`flex items-center gap-2 rounded px-4 py-2 transition ${
+          active === 'home'
+            ? 'bg-primary-green text-white'
+            : 'text-gray-700 hover:bg-gray-100'
+        }`}
+      >
+        <FaHome />
+        Inicio
+      </Link>
+    </nav>
   </aside>
 );

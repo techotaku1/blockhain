@@ -1,27 +1,11 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import type { JSX } from 'react';
-import {
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  useUser,
-} from '@clerk/clerk-react';
+
+import React, { JSX, useEffect, useState } from 'react';
+
+import { useUser } from '@clerk/clerk-react';
 import { Sidebar } from '~/components/Sidebar';
 import { TopBar } from '~/components/TopBar';
-import {
-  FaLeaf,
-  FaHistory,
-  FaGift,
-  FaUser,
-  FaUsers,
-  FaBell,
-  FaMedal,
-  FaCamera,
-  FaSignInAlt,
-  FaUserPlus,
-} from 'react-icons/fa';
+import { FaLeaf, FaGift, FaBell, FaMedal, FaCamera } from 'react-icons/fa';
 import {
   createUserPoint,
   getUserStats,
@@ -29,7 +13,7 @@ import {
   addUserHistory,
   saveUserFromClerk,
 } from '../../server/db/serverActions';
-import type { User } from '../../types'; // Asegúrate de importar el tipo User
+import type { User } from '../../types';
 
 export default function UsuarioPage() {
   const [notificaciones] = useState([
@@ -104,8 +88,8 @@ export default function UsuarioPage() {
     if (user) {
       saveUserFromClerk({
         id: user.id,
-        email: user.primaryEmailAddress?.emailAddress || '',
-        name: user.fullName || '',
+        email: user.primaryEmailAddress?.emailAddress ?? '',
+        name: user.fullName ?? '',
       });
     }
   }, [user]);
@@ -204,7 +188,7 @@ export default function UsuarioPage() {
                       onClick={() => setSelectedUser(u.id)}
                     >
                       <div className="font-semibold">
-                        {u.name || 'Sin nombre'}
+                        {u.name ?? 'Sin nombre'}
                       </div>
                       <div className="text-xs text-gray-500">{u.email}</div>
                     </li>
@@ -310,7 +294,7 @@ export default function UsuarioPage() {
                 type="file"
                 accept="image/*"
                 title="Selecciona una imagen para subir"
-                onChange={(e) => setImagen(e.target.files?.[0] || null)}
+                onChange={(e) => setImagen(e.target.files?.[0] ?? null)}
                 className="file:bg-primary-light file:text-primary-green file:rounded file:px-3 file:py-1"
                 required
               />

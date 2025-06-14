@@ -1,38 +1,42 @@
 'use client';
+
+import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
+
 import { useUser } from '@clerk/clerk-react';
+
+import { Button } from '~/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '~/components/ui/card';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
 import { Sidebar } from '~/components/Sidebar';
 import { TopBar } from '~/components/TopBar';
+
 import {
   crearReporteZona,
   getReportesZonaByUser,
 } from '../../server/db/serverActions';
 import type { ReporteZona } from '../../types';
-// Importa los componentes de shadcn/ui
-import { Card, CardHeader, CardTitle, CardContent } from '~/components/ui/card';
-import { Button } from '~/components/ui/button';
-import { Input } from '~/components/ui/input';
-import { Label } from '~/components/ui/label';
 
 export default function ReporteZonaPage() {
   const { user } = useUser();
   const [lugar, setLugar] = useState('');
   const [hora, setHora] = useState('');
-  const [imagen, setImagen] = useState<File | null>(null);
+  const [setImagen] = useState<File | null>(null);
   const [historial, setHistorial] = useState<ReporteZona[]>([]);
   const [notificaciones] = useState([]);
   const [puntos] = useState(0);
 
   useEffect(() => {
     if (user) {
-      getReportesZonaByUser(user.id).then(setHistorial);
+      void getReportesZonaByUser(user.id).then(setHistorial);
     }
   }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
-    let imagenUrl = '';
+    const imagenUrl = '';
     // Aquí podrías subir la imagen y obtener la URL si tienes un sistema de almacenamiento
     await crearReporteZona({
       userId: user.id,
@@ -41,8 +45,7 @@ export default function ReporteZonaPage() {
       imagenUrl,
     });
     setLugar('');
-    setHora('');
-    setImagen(null);
+    setHora('')
     // Recarga historial
     const nuevos = await getReportesZonaByUser(user.id);
     setHistorial(nuevos);
@@ -81,10 +84,10 @@ export default function ReporteZonaPage() {
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.870759740072!2d-74.08175368467654!3d4.609710343446627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f99a4b2b2b2b3%3A0x2e7d32!2sBogotá!5e0!3m2!1ses!2sco!4v1688765432101!5m2!1ses!2sco"
                     width="100%"
                     height="100%"
-                    allowFullScreen={true}
+                    allowFullScreen
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                  ></iframe>
+                  />
                 </div>
                 <Label htmlFor="hora">Hora</Label>
                 <Input
@@ -99,7 +102,7 @@ export default function ReporteZonaPage() {
                   id="imagen"
                   type="file"
                   accept="image/*"
-                  onChange={(e) => setImagen(e.target.files?.[0] || null)}
+                  onChange={(e) =>(e.target.files?.[0] ?? null)}
                 />
                 <Button type="submit" className="w-fit">
                   Enviar reporte
@@ -138,15 +141,15 @@ export default function ReporteZonaPage() {
                         <td className="px-2 py-1">{r.puntos}</td>
                         <td className="px-2 py-1">
                           {r.imagenUrl ? (
-                            <img
+                            <Image
                               src={r.imagenUrl}
                               alt="Evidencia"
-                              className="h-10 w-10 rounded object-cover"
+                              width={40}
+                              height={40}
+                              className="h-10 w-10 object-cover rounded"
                             />
                           ) : (
-                            <span className="text-xs text-gray-400">
-                              Sin imagen
-                            </span>
+                            <span className="text-xs text-gray-400">Sin imagen</span>
                           )}
                         </td>
                       </tr>

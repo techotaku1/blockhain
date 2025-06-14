@@ -1,15 +1,13 @@
 'use server';
 
-// Ajusta la ruta según la ubicación real de tu archivo db
-import { db } from '~/server/db'; // Asegúrate que este archivo exporta db
-import { userPoints, users, userHistory, reportesZona } from './schema';
 import { sql } from 'drizzle-orm';
+import { db } from '~/server/db';
+import { userPoints, users, userHistory, reportesZona } from './schema';
 
 export async function createUserPoint(formData: FormData) {
   const descripcion = formData.get('descripcion') as string;
   const tipoResiduo = formData.get('tipoResiduo') as string;
   const entidad = formData.get('entidad') as string;
-  const notificarAutoridad = formData.get('notificarAutoridad') === '1';
   // Aquí puedes manejar la imagen si la quieres guardar en disco o en la base de datos
 
   // Simula un userId (deberías obtenerlo del usuario autenticado)
@@ -136,4 +134,5 @@ export async function getReportesZonaByUser(userId: string) {
     .where(sql`${reportesZona.userId} = ${userId}`);
 }
 
+// export { db }; // Removed to comply with "use server" restrictions
 // export { db }; // Removed to comply with "use server" restrictions

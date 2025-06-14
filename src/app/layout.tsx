@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono } from 'next/font/google';
+
 import {
   ClerkProvider,
   SignInButton,
@@ -14,6 +15,7 @@ import {
   FaSignInAlt,
   FaUserPlus,
 } from 'react-icons/fa';
+
 import '~/styles/globals.css';
 
 const geistSans = Geist({

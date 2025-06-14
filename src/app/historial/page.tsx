@@ -1,7 +1,7 @@
 'use client';
+
 import React, { useState } from 'react';
-import { Sidebar } from '~/components/Sidebar';
-import { TopBar } from '~/components/TopBar';
+
 import {
   FaHistory,
   FaLeaf,
@@ -10,27 +10,16 @@ import {
   FaMapMarkerAlt,
 } from 'react-icons/fa';
 
+import { Sidebar } from '~/components/Sidebar';
+
 export default function HistorialPage() {
-  const [historial, setHistorial] = useState([
+  const [historial] = useState([
     { fecha: '2024-06-01', descripcion: 'Subida de imagen', puntos: 20 },
     { fecha: '2024-06-03', descripcion: 'Reto semanal completado', puntos: 50 },
     { fecha: '2024-06-05', descripcion: 'Referencia a un amigo', puntos: 30 },
     { fecha: '2024-06-07', descripcion: 'Reciclaje en EcoParque', puntos: 15 },
     // ...más registros
   ]);
-  const [notificaciones] = useState([
-    {
-      id: 1,
-      mensaje: '¡Felicidades! Has desbloqueado la insignia "Recolector Verde".',
-      tipo: 'logro',
-    },
-    {
-      id: 2,
-      mensaje: 'Recuerda reciclar hoy para ganar más puntos.',
-      tipo: 'recordatorio',
-    },
-  ]);
-  const [puntos] = useState(120);
   const accionesSemana = historial.filter(
     (h) => h.fecha >= '2024-06-01' && h.fecha <= '2024-06-07'
   );
@@ -109,10 +98,10 @@ export default function HistorialPage() {
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.870759740072!2d-74.08175368467654!3d4.609710343446627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f99a4b2b2b2b3%3A0x2e7d32!2sBogotá!5e0!3m2!1ses!2sco!4v1688765432101!5m2!1ses!2sco"
                 width="100%"
                 height="100%"
-                allowFullScreen={true}
+                allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
+              />
             </div>
           </section>
 

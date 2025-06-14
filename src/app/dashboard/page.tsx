@@ -1,14 +1,10 @@
 'use client';
 import React, { useState } from 'react';
+
+import { FaGift, FaMapMarkerAlt, FaChartBar, FaRecycle } from 'react-icons/fa';
+
 import { Sidebar } from '~/components/Sidebar';
 import { TopBar } from '~/components/TopBar';
-import {
-  FaGift,
-  FaMapMarkerAlt,
-  FaChartBar,
-  FaRecycle
-} from 'react-icons/fa';
-import { SignInButton, SignUpButton } from '@clerk/clerk-react';
 
 export default function DashboardPage() {
   // Ejemplo de métricas y datos para el dashboard
