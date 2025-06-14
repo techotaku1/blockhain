@@ -6,6 +6,7 @@ import {
   FaUser,
   FaUsers,
   FaQrcode,
+  FaExclamationTriangle,
 } from 'react-icons/fa';
 
 interface SidebarProps {
@@ -55,6 +56,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ active }) => (
     >
       <FaQrcode className="text-2xl" />
       <span className="hidden group-hover:underline xl:block">POAP</span>
+    </a>
+    <a
+      href="/reporte-zona"
+      className={`group flex flex-col items-center gap-1 rounded-2xl py-4 transition hover:bg-[#c5e1a5] ${active === 'reporte-zona' ? 'bg-[#c5e1a5]' : ''}`}
+    >
+      <FaExclamationTriangle className="text-2xl" />
+      <span className="hidden group-hover:underline xl:block">
+        Reporte Zona
+      </span>
     </a>
   </aside>
 );

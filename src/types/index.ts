@@ -42,3 +42,15 @@ export type UserHistory = {
   points: number;
   createdAt: Date;
 };
+
+// Tipado para reportes de zona
+export type ReporteZona = {
+  id: number;
+  userId: string;
+  lugar: string;
+  hora: string;
+  imagenUrl?: string | null;
+  estado: string; // 'En revisión' | 'Revisado'
+  puntos: number;
+  createdAt: Date;
+};

@@ -43,7 +43,6 @@
     "@types/node": "^24.0.1",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "@types/clsx": "^1.2.1",
     "dotenv": "^16.5.0",
     "drizzle-kit": "^0.31.1",
     "eslint": "^9.28.0",

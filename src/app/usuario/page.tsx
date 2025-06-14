@@ -366,9 +366,6 @@ export default function UsuarioPage() {
 
           {/* Historial completo */}
           <section className="bg-card-light border-border-light rounded-2xl border p-6 shadow-lg">
-            <h2 className="text-secondary-blue mb-4 flex items-center gap-2 text-lg font-bold">
-              <FaHistory /> Historial de puntos
-            </h2>
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm">
                 <thead>

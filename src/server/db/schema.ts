@@ -1,8 +1,8 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { sql } from "drizzle-orm";
-import { index, pgTableCreator } from "drizzle-orm/pg-core";
+import { sql } from 'drizzle-orm';
+import { index, pgTableCreator } from 'drizzle-orm/pg-core';
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -13,7 +13,7 @@ import { index, pgTableCreator } from "drizzle-orm/pg-core";
 export const createTable = pgTableCreator((name) => `gonzaapp_${name}`);
 
 export const posts = createTable(
-  "post",
+  'post',
   (d) => ({
     id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
     name: d.varchar({ length: 256 }),
@@ -23,7 +23,7 @@ export const posts = createTable(
       .notNull(),
     updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
   }),
-  (t) => [index("name_idx").on(t.name)],
+  (t) => [index('name_idx').on(t.name)]
 );
 
 export const userPoints = createTable(
@@ -83,6 +83,20 @@ export const userHistory = createTable('user_history', (d) => ({
   userId: d.varchar({ length: 128 }).notNull(),
   action: d.varchar({ length: 256 }).notNull(),
   points: d.integer().notNull(),
+  createdAt: d
+    .timestamp({ withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+}));
+
+export const reportesZona = createTable('reportes_zona', (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  userId: d.varchar({ length: 128 }).notNull(),
+  lugar: d.varchar({ length: 256 }).notNull(),
+  hora: d.varchar({ length: 64 }).notNull(),
+  imagenUrl: d.varchar({ length: 512 }),
+  estado: d.varchar({ length: 32 }).default('En revisión').notNull(), // 'En revisión' | 'Revisado'
+  puntos: d.integer().default(0).notNull(),
   createdAt: d
     .timestamp({ withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)

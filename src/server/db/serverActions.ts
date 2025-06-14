@@ -2,7 +2,7 @@
 
 // Ajusta la ruta según la ubicación real de tu archivo db
 import { db } from '~/server/db'; // Asegúrate que este archivo exporta db
-import { userPoints, users, userHistory } from './schema';
+import { userPoints, users, userHistory, reportesZona } from './schema';
 import { sql } from 'drizzle-orm';
 
 export async function createUserPoint(formData: FormData) {
@@ -105,4 +105,35 @@ export async function saveUserFromClerk({
     await db.insert(users).values({ id, email, name });
   }
 }
+
+// Crear un reporte de zona
+export async function crearReporteZona({
+  userId,
+  lugar,
+  hora,
+  imagenUrl,
+}: {
+  userId: string;
+  lugar: string;
+  hora: string;
+  imagenUrl?: string;
+}) {
+  await db.insert(reportesZona).values({
+    userId,
+    lugar,
+    hora,
+    imagenUrl,
+    estado: 'En revisión',
+    puntos: 0,
+  });
+}
+
+// Listar reportes de zona de un usuario
+export async function getReportesZonaByUser(userId: string) {
+  return db
+    .select()
+    .from(reportesZona)
+    .where(sql`${reportesZona.userId} = ${userId}`);
+}
+
 // export { db }; // Removed to comply with "use server" restrictions

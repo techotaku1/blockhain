@@ -61,7 +61,6 @@ export default function HistorialPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-white font-[Inter,sans-serif]">
-      <TopBar puntos={puntos} notificaciones={notificaciones} />
       <div className="flex flex-1">
         <div className="sticky top-0 z-20 h-screen flex-shrink-0">
           <Sidebar active="historial" />
@@ -76,9 +75,6 @@ export default function HistorialPage() {
 
           {/* Acciones de la semana */}
           <section className="bg-card-light border-border-light rounded-2xl border p-6 shadow-lg">
-            <h2 className="text-secondary-blue mb-4 flex items-center gap-2 text-lg font-bold">
-              <FaLeaf /> Acciones de esta semana
-            </h2>
             <ul className="flex flex-col gap-2">
               {accionesSemana.length === 0 && (
                 <li className="text-text-muted">

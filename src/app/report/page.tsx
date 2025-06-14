@@ -57,6 +57,8 @@ export default function ReportPage() {
               <input
                 type="file"
                 accept="image/*"
+                title="Sube una foto del problema ambiental"
+                placeholder="Selecciona una imagen"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (file) {
